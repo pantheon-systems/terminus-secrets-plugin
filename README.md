@@ -12,17 +12,23 @@ git clone https://github.com/pantheon-systems/terminus-secrets-plugin
 ```
 
 ### Usage
+Write "value" into "key" in the "test" environment of "sitename".
 ```
-# Write "value" into "key" in the "test" environment of "sitename".
 terminus secrets set --site=sitename --env=test key value
+```
 
-# Remove the secret "key" in the "test" environment of "sitename".
+Remove the secret "key" in the "test" environment of "sitename".
+```
 terminus secrets delete --site=sitename --env=test key
+```
 
-# Show current value of "key" in the "test" environment of "sitename".
+Show current value of "key" in the "test" environment of "sitename".
+```
 terminus secrets show --site=sitename --env=test key
+```
 
-# Show all available keys in the "test" environment of "sitename"
+Show all available keys in the "test" environment of "sitename"
+```
 terminus secrets show --site=sitename --env=test
 ```
 
