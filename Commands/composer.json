@@ -1,0 +1,9 @@
+{
+  "name": "pantheon-systems/cli-plugin-example",
+  "description": "A simple 'Hello, World' plugin for Terminus",
+  "homepage": "https://github.com/pantheon-systems/cli-plugin-example",
+  "license": "MIT",
+  "require": {
+    "php": ">=5.4"
+  },
+}
