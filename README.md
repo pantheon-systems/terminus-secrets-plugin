@@ -1,6 +1,6 @@
 # Terminus Secrets Plugin
 
-A simple plugin for Terminus-CLI that allows for manipulation of a 'secrets' file for use with Quicksilver.
+A plugin for Terminus-CLI that allows for manipulation of a 'secrets' file for use with Quicksilver.
 
 Use as directed by Quicksilver examples.
 
@@ -8,7 +8,7 @@ Use as directed by Quicksilver examples.
 ```
 mkdir -p ~/terminus/plugins
 cd ~/terminus/plugins
-git clone https://github.com/pantheon-systems/terminus-secrets-plugin
+git clone https://github.com/greg-1-anderson/terminus-secrets-plugin
 ```
 
 ### Usage

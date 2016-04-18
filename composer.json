@@ -1,0 +1,9 @@
+{
+  "name": "greg-1-anderson/terminus-secrets-plugin",
+  "description": "A plugin for Terminus-CLI that allows for manipulation of a 'secrets' file for use with Quicksilver.",
+  "homepage": "https://github.com/greg-1-anderson/terminus-secrets-plugin",
+  "license": "MIT",
+  "require": {
+    "php": ">=5.4"
+  },
+}
