@@ -40,7 +40,3 @@ Learn more about Terminus and Terminus Plugins at:
 This plugin writes entries into the file `private/secrets.json`.  This file is, naturally enough, a json file containing multiple keys.  The `terminus secrets` script will fetch this file, modify is as requested, and then write it back to the Pantheon site.
 
 Note that the `private` directory is located one level above the local working copy of your git repository on your Pantheon application server. This directory is **not** copied to `test` and `live` during deployments; you must therefore individually set secrets on each environment where you would like them to be available.
-
-### Note on Bug in Help
-
-Terminus has a bug which requires positional arguments to be described in help as 'email', as any other alternative results in the argument failing validation.
