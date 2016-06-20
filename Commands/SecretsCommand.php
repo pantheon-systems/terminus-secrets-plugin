@@ -44,10 +44,10 @@ class SecretsCommand extends TerminusCommand {
    * arguments is also not shown.
    *
    *  ## OPTIONS
-   * <email>
+   * <key>
    * : The key to the secret to set
    *
-   * <email>
+   * <value>
    * : The value of the secret
    *
    * [--site=<site>]
@@ -69,7 +69,7 @@ class SecretsCommand extends TerminusCommand {
    * Delete a secret value
    *
    *  ## OPTIONS
-   * <email>
+   * <key>
    * : The key to the secret to remove
    *
    * [--site=<site>]
@@ -90,7 +90,7 @@ class SecretsCommand extends TerminusCommand {
    * Show a secret value
    *
    *  ## OPTIONS
-   * [<email>]
+   * [<value>]
    * : The key to the secret to fetch. Optional. If not specified, shows all secret values.
    *
    * [--site=<site>]
