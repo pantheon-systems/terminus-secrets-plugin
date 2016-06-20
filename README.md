@@ -8,7 +8,7 @@ Use as directed by Quicksilver examples.
 ```
 mkdir -p ~/terminus/plugins
 cd ~/terminus/plugins
-git clone https://github.com/pantheon-systems/terminus-secrets-plugin
+composer require pantheon-systems/terminus-secrets-plugin
 ```
 
 ### Usage
