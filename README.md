@@ -4,7 +4,7 @@ A plugin for Terminus-CLI that allows for manipulation of a simple 'secrets,json
 
 Use as directed by Quicksilver examples.
 
-Be aware that since this manages a simple json file in the network attached storage, filesystem synchronization operations will affect the secrets. You should not use this method if your use-case is to have different secrets in different environments. For that, or for secrets that are sensitive, we recommend [lockr.io](https://lockr.io).
+Be aware that since this manages a simple json file in the network attached storage, filesystem synchronization operations will affect the secrets. You should not use this method if your use-case is to have different secrets in different environments. For that, or for secrets that are sensitive, we recommend [Lockr](https://github.com/lockr/lockr-terminus).
 
 ### Installation
 ```
