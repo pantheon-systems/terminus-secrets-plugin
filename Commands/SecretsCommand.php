@@ -143,7 +143,7 @@ class SecretsCommand extends TerminusCommand {
     else {
       echo "Initializing secrets.json\n";
       exec("touch secrets.json");
-      exec("(echo 'cd files' && echo 'mkdir private' && 'cd private' && echo 'put secrets.json') | $sftpCommand", $fetch_output, $fetch_status);
+      exec("(echo 'cd files' && echo 'mkdir private' && echo 'cd private' && echo 'put secrets.json') | $sftpCommand", $fetch_output, $fetch_status);
     }
     return [];
   }
