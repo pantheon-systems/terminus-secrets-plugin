@@ -7,7 +7,7 @@
 
 namespace Terminus\Commands;
 
-use Terminus\Models\Collections\Sites;
+use Terminus\Collections\Sites;
 use Terminus\Commands\TerminusCommand;
 use Terminus\Session;
 
