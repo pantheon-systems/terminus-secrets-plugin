@@ -3,13 +3,13 @@
 [![Terminus v1.x Compatible](https://img.shields.io/badge/terminus-v1.x-green.svg)](https://github.com/pantheon-systems/terminus-secrets-plugin/tree/1.x)
 [![Terminus v0.x Compatible](https://img.shields.io/badge/terminus-v0.x-green.svg)](https://github.com/pantheon-systems/terminus-secrets-plugin/tree/0.x)
 
-Terminus Plugin that allows for manipulation of a simple 'secrets,json' file for use with Quicksilver on [Pantheon](https://www.pantheon.io) sites.
+Terminus Plugin that allows for manipulation of a simple 'secrets.json' file for use with Quicksilver on [Pantheon](https://www.pantheon.io) sites.
 
-Adds a command 'secrets' to Terminus 0.x which you can use to add, fetch, remove and update. For a version that works with Terminus 1.x, see the [1.x branch](https://github.com/pantheon-systems/terminus-secrets-plugin/tree/1.x).
+Adds a command 'secrets' to Terminus 1.x which you can use to add, fetch, remove and update. For a version that works with Terminus 0.x, see the [0.x branch](https://github.com/pantheon-systems/terminus-secrets-plugin/tree/0.x).
 
 Use as directed by Quicksilver examples.
 
-Be aware that since this manages a simple json file in the network attached storage, filesystem synchronization operations will affect the secrets. You should not use this method if your secrets  are sensitive; for that, we recommend [Lockr](https://github.com/lockr/lockr-terminus).
+Be aware that since this manages a simple json file in the network attached storage, filesystem synchronization operations will affect the secrets. You should not use this method if your use-case is to have different secrets in different environments. For that, or for secrets that are sensitive, we recommend [Lockr](https://github.com/lockr/lockr-terminus).
 
 ## Configuration
 
@@ -18,22 +18,22 @@ This plugin requires no configuration to use.
 ## Examples
 Write "value" into "key" in the "test" environment of "sitename".
 ```
-terminus secrets set --site=sitename --env=test key value
+terminus secrets:set site.env key value
 ```
 
 Remove the secret "key" in the "test" environment of "sitename".
 ```
-terminus secrets delete --site=sitename --env=test key
+terminus secrets:delete site.env key
 ```
 
 Show current value of "key" in the "test" environment of "sitename".
 ```
-terminus secrets show --site=sitename --env=test key
+terminus secrets:show site.env key
 ```
 
 Show all available keys in the "test" environment of "sitename"
 ```
-terminus secrets show --site=sitename --env=test
+terminus secrets:list site.env
 ```
 
 Learn more about Terminus and Terminus Plugins at:
@@ -43,7 +43,7 @@ Learn more about Terminus and Terminus Plugins at:
 For help installing, see [Terminus's Wiki](https://github.com/pantheon-systems/terminus/wiki/Plugins)
 ```
 mkdir -p ~/terminus/plugins
-composer create-project -d ~/terminus/plugins pantheon-systems/terminus-secrets-plugin:~0
+composer create-project -d ~/terminus/plugins pantheon-systems/terminus-secrets-plugin:~1
 ```
 
 ## Internals
@@ -55,9 +55,4 @@ Note that the `private` directory is located one level above the local working c
 Also, be aware that your secrets may be overwritten by filesystem sync operations. For instance, if you check the "pull files and database from Live" option when deploying to Test, that will overrite the Test env with secrets (or a lack thereof) in Live. If you intend to use secrets.json for production, make sure you set the same file in all environments to avoid confusion.
 
 ## Help
-Run `terminus help drupal` for help.
-
-### Note on Bug in Help
-
-Terminus has a bug which requires positional arguments to be described in help as 'email', as any other alternative results in the argument failing validation.
-
+Run `terminus help secrets` for help.
