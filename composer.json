@@ -1,9 +1,11 @@
 {
-  "name": "pantheon-systems/terminus-secrets-plugin",
-  "description": "A plugin for Terminus-CLI that allows for manipulation of a 'secrets' file for use with Quicksilver.",
-  "homepage": "https://github.com/pantheon-systems/terminus-secrets-plugin",
-  "license": "MIT",
-  "require": {
-    "php": ">=5.4"
-  }
+    "name": "pantheon-systems/terminus-secrets-plugin",
+    "description": "Secrets - A Terminus plugin that allows for manipulation of a 'secrets' file for use with Quicksilver.",
+    "license": "MIT",
+    "type": "terminus-plugin",
+    "extra": {
+        "terminus": {
+            "compatible-version": "^0"
+        }
+    }
 }
