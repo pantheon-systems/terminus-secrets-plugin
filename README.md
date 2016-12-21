@@ -55,4 +55,4 @@ Note that the `private` directory is located one level above the local working c
 Also, be aware that your secrets may be overwritten by filesystem sync operations. For instance, if you check the "pull files and database from Live" option when deploying to Test, that will overrite the Test env with secrets (or a lack thereof) in Live. If you intend to use secrets.json for production, make sure you set the same file in all environments to avoid confusion.
 
 ## Help
-Run `terminus help secrets` for help.
+Run `terminus list secrets` for a complete list of available commands. Use `terminus help <command>` to get help on one command.

@@ -96,6 +96,10 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
         return new PropertyList($secretValues);
     }
 
+    /**
+     * Look up the appropriate sftp command to use from the site
+     * connection info record.
+     */
     protected function getSftpCommand($site_env_id)
     {
         list(, $env) = $this->getSiteEnv($site_env_id);
@@ -105,6 +109,9 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
         return $sftpCommand;
     }
 
+    /**
+     * Download a copy of the secrets.json file from the appropriate Pantheon site.
+     */
     protected function downloadSecrets($site_env_id)
     {
         $sftpCommand = $this->getSftpCommand($site_env_id);
@@ -125,6 +132,9 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
         return [];
     }
 
+    /**
+     * Upload a modified secrets.json to the target Pantheon site.
+     */
     protected function uploadSecrets($site_env_id, $secretValues)
     {
         $sftpCommand = $this->getSftpCommand($site_env_id);
@@ -147,6 +157,7 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
             unlink($tempfile);
         }
         mkdir($tempfile);
+        chmod($tempfile, 0700);
         if (is_dir($tempfile)) {
             $this->tmpDirs[] = $tempfile;
             return $tempfile;
