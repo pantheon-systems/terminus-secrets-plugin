@@ -90,7 +90,7 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
      * @param string $site_env_id Name of the environment to run the drush command on.
      * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      */
-    public function list($site_env_id)
+    public function listSecrets($site_env_id)
     {
         $secretValues = $this->downloadSecrets($site_env_id);
         return new PropertyList($secretValues);
