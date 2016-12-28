@@ -37,13 +37,13 @@ terminus secrets:list site.env
 ```
 
 Learn more about Terminus and Terminus Plugins at:
-[https://github.com/pantheon-systems/cli/wiki/Plugins](https://github.com/pantheon-systems/cli/wiki/Plugins)
+[https://pantheon.io/docs/terminus/plugins/](https://pantheon.io/docs/terminus/plugins/)
 
 ## Installation
-For help installing, see [Terminus's Wiki](https://github.com/pantheon-systems/terminus/wiki/Plugins)
+For help installing, see [Manage Plugins](https://pantheon.io/docs/terminus/plugins/)
 ```
-mkdir -p ~/terminus/plugins
-composer create-project -d ~/terminus/plugins pantheon-systems/terminus-secrets-plugin:~1
+mkdir -p ~/.terminus/plugins
+composer create-project -d ~/.terminus/plugins pantheon-systems/terminus-secrets-plugin:~1
 ```
 
 ## Internals
