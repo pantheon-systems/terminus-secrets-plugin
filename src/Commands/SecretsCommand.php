@@ -20,6 +20,7 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
 {
     use SiteAwareTrait;
 
+    protected $file = 'secrets.json';
     protected $info;
     protected $tmpDirs = [];
 
@@ -31,6 +32,25 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
         parent::__construct();
         // Insure that $workdir will be deleted on exit.
         register_shutdown_function([$this, 'cleanup']);
+    }
+
+    /**
+     * Hook every command defined in this file; read
+     * the --file option, if present, and set the file
+     * being operated on if requested.
+     *
+     * @hook pre-command
+     * @option string file The name of the secrets file to operate on. Default is secrets.json.
+     */
+    public function selectFile(CommandData $commandData)
+    {
+        $input = $commandData->input();
+        if ($input->hasOption('file')) {
+            $file = $input->getOption('file');
+            if (!empty($file)) {
+                $this->file = $file;
+            }
+        }
     }
 
     /**
@@ -117,17 +137,17 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
         $sftpCommand = $this->getSftpCommand($site_env_id);
         $workdir = $this->tempdir();
         chdir($workdir);
-        exec("(echo 'cd files' && echo 'cd private' && echo 'get secrets.json') | $sftpCommand", $fetch_output, $fetch_status);
+        exec("(echo 'cd files' && echo 'cd private' && echo 'get {$this->file}') | $sftpCommand", $fetch_output, $fetch_status);
         // if ($fetch_status) { ... }
-        if (file_exists('secrets.json')) {
-            $secrets = file_get_contents('secrets.json');
+        if (file_exists($this->file)) {
+            $secrets = file_get_contents($this->file);
             $secretValues = (array)json_decode($secrets);
             return $secretValues;
         }
         else {
-            $this->log()->notice("Initializing secrets.json");
-            exec("touch secrets.json");
-            exec("(echo 'cd files' && echo 'mkdir private' && echo 'cd private' && echo 'put secrets.json') | $sftpCommand", $fetch_output, $fetch_status);
+            $this->log()->notice("Initializing {$this->file}");
+            touch($this->file);
+            exec("(echo 'cd files' && echo 'mkdir private' && echo 'cd private' && echo 'put {$this->file}') | $sftpCommand", $fetch_output, $fetch_status);
         }
         return [];
     }
@@ -141,10 +161,10 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
         $workdir = $this->tempdir();
         chdir($workdir);
 
-        file_put_contents('secrets.json', json_encode($secretValues));
+        file_put_contents($this->file, json_encode($secretValues));
 
         // Upload secrets.json, if possible
-        exec("(echo 'cd files' && echo 'cd private' && echo 'put secrets.json') | $sftpCommand", $upload_output, $upload_status);
+        exec("(echo 'cd files' && echo 'cd private' && echo 'put {$this->secrets}') | $sftpCommand", $upload_output, $upload_status);
         // if ($uplaod_status) { ... }
     }
 
