@@ -9,6 +9,7 @@ namespace Pantheon\TerminusSecrets\Commands;
 
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Pantheon\Terminus\Commands\TerminusCommand;
+use Pantheon\Terminus\Exceptions\TerminusException;
 use Pantheon\Terminus\Site\SiteAwareInterface;
 use Pantheon\Terminus\Site\SiteAwareTrait;
 use Symfony\Component\Filesystem\Filesystem;
@@ -41,13 +42,29 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
      * @param string $site_env_id Name of the environment to run the drush command on.
      * @param string $key Item to set
      * @param string $value Value to set it to
+     * @option file Name of file to store secrets in
+     * @option clear Overwrite existing values
+     * @option skip-if-empty Don't write anything unless '$value' is non-empty
      */
-    public function set($site_env_id, $key, $value)
+    public function set(
+        $site_env_id,
+        $key,
+        $value,
+        $options = [
+            'file' => 'secrets.json',
+            'clear' => false,
+            'skip-if-empty' => false,
+        ])
     {
-        $secretValues = $this->downloadSecrets($site_env_id);
+        if ($options['skip-if-empty'] && empty($value)) {
+            return;
+        }
+        if (!$options['clear']) {
+           $secretValues = $this->downloadSecrets($site_env_id, $options['file']);
+        }
         $secretValues[$key] = $value;
 
-        $this->uploadSecrets($site_env_id, $secretValues);
+        $this->uploadSecrets($site_env_id, $secretValues, $options['file']);
     }
 
     /**
@@ -56,14 +73,16 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
      * @command secrets:delete
      *
      * @param string $site_env_id Name of the environment to run the drush command on.
-     * @param string $key Item to delete
+     * @param string $key Item to delete (or empty to delete everything)
      */
-    public function delete($site_env_id, $key)
+    public function delete($site_env_id, $key, $options = ['file' => 'secrets.json'])
     {
-        $secretValues = $this->downloadSecrets($site_env_id);
-        unset($secretValues[$key]);
-
-        $this->uploadSecrets($site_env_id, $secretValues);
+        $secretValues = [];
+        if (!empty($key)) {
+            $secretValues = $this->downloadSecrets($site_env_id, $options['file']);
+            unset($secretValues[$key]);
+        }
+        $this->uploadSecrets($site_env_id, $secretValues, $options['file']);
     }
 
     /**
@@ -76,9 +95,12 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
      * @param string $key Item to show
      * @return string
      */
-    public function show($site_env_id, $key)
+    public function show($site_env_id, $key, $options = ['file' => 'secrets.json'])
     {
-        $secretValues = $this->downloadSecrets($site_env_id);
+        $secretValues = $this->downloadSecrets($site_env_id, $options['file']);
+        if (!array_key_exists($key, $secretValues)) {
+            throw new TerminusException('Key {key} not found in {file}', ['key' => $key, 'file' => $options['file']]);
+        }
         return $secretValues[$key];
     }
 
@@ -90,9 +112,9 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
      * @param string $site_env_id Name of the environment to run the drush command on.
      * @return \Consolidation\OutputFormatters\StructuredData\PropertyList
      */
-    public function listSecrets($site_env_id)
+    public function listSecrets($site_env_id, $options = ['file' => 'secrets.json'])
     {
-        $secretValues = $this->downloadSecrets($site_env_id);
+        $secretValues = $this->downloadSecrets($site_env_id, $options['file']);
         return new PropertyList($secretValues);
     }
 
@@ -110,24 +132,50 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
     }
 
     /**
+     * Call rsync to or from the specified site.
+     *
+     * @param string $site_env_id Remote site
+     * @param string $src Source path to copy from. Start with ":" for remote.
+     * @param string $dest Destination path to copy to. Start with ":" for remote.
+     */
+    protected function rsync($site_env_id, $src, $dest)
+    {
+        list($site, $env) = $this->getSiteEnv($site_env_id);
+        $env_id = $env->getName();
+
+        $siteInfo = $site->serialize();
+        $site_id = $siteInfo['id'];
+
+        $siteAddress = "$env_id.$site_id@appserver.$env_id.$site_id.drush.in:";
+
+        $src = preg_replace('/^:/', $siteAddress, $src);
+        $dest = preg_replace('/^:/', $siteAddress, $dest);
+
+        $this->passthru("rsync -rlIvz --ipv4 --exclude=.git -e 'ssh -p 2222' $src $dest >/dev/null 2>&1");
+    }
+
+    protected function passthru($command)
+    {
+        $result = 0;
+        passthru($command, $result);
+
+        if ($result != 0) {
+            throw new TerminusException('Command `{command}` failed with exit code {status}', ['command' => $command, 'status' => $result]);
+        }
+    }
+
+    /**
      * Download a copy of the secrets.json file from the appropriate Pantheon site.
      */
-    protected function downloadSecrets($site_env_id)
+    protected function downloadSecrets($site_env_id, $filename)
     {
-        $sftpCommand = $this->getSftpCommand($site_env_id);
         $workdir = $this->tempdir();
-        chdir($workdir);
-        exec("(echo 'cd files' && echo 'cd private' && echo 'get secrets.json') | $sftpCommand", $fetch_output, $fetch_status);
-        // if ($fetch_status) { ... }
-        if (file_exists('secrets.json')) {
-            $secrets = file_get_contents('secrets.json');
+        $this->rsync($site_env_id, ":files/private/$filename", $workdir);
+
+        if (file_exists("$workdir/$filename")) {
+            $secrets = file_get_contents("$workdir/$filename");
             $secretValues = (array)json_decode($secrets);
             return $secretValues;
-        }
-        else {
-            $this->log()->notice("Initializing secrets.json");
-            exec("touch secrets.json");
-            exec("(echo 'cd files' && echo 'mkdir private' && echo 'cd private' && echo 'put secrets.json') | $sftpCommand", $fetch_output, $fetch_status);
         }
         return [];
     }
@@ -135,17 +183,13 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
     /**
      * Upload a modified secrets.json to the target Pantheon site.
      */
-    protected function uploadSecrets($site_env_id, $secretValues)
+    protected function uploadSecrets($site_env_id, $secretValues, $filename)
     {
-        $sftpCommand = $this->getSftpCommand($site_env_id);
         $workdir = $this->tempdir();
-        chdir($workdir);
+        mkdir("$workdir/private");
 
-        file_put_contents('secrets.json', json_encode($secretValues));
-
-        // Upload secrets.json, if possible
-        exec("(echo 'cd files' && echo 'cd private' && echo 'put secrets.json') | $sftpCommand", $upload_output, $upload_status);
-        // if ($uplaod_status) { ... }
+        file_put_contents("$workdir/private/$filename", json_encode($secretValues));
+        $this->rsync($site_env_id, "$workdir/private", ':files/');
     }
 
     // Create a temporary directory
