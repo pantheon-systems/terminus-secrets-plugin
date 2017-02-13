@@ -13,6 +13,8 @@ use Pantheon\Terminus\Exceptions\TerminusException;
 use Pantheon\Terminus\Site\SiteAwareInterface;
 use Pantheon\Terminus\Site\SiteAwareTrait;
 use Symfony\Component\Filesystem\Filesystem;
+use Consolidation\AnnotatedCommand\AnnotationData;
+use Symfony\Component\Console\Input\InputInterface;
 
 /**
  * Manage secrets on a Pantheon instance
@@ -30,6 +32,15 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
     public function __construct()
     {
         parent::__construct();
+    }
+
+    /**
+     * Register our shutdown function if any of our commands are executed.
+     *
+     * @hook init
+     */
+    public function initialize(InputInterface $input, AnnotationData $annotationData)
+    {
         // Insure that $workdir will be deleted on exit.
         register_shutdown_function([$this, 'cleanup']);
     }
@@ -193,7 +204,6 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
     }
 
     // Create a temporary directory
-    // TODO: Is there a Terminus library we could use to do this?
     public function tempdir($dir=FALSE, $prefix='php')
     {
         $tempfile=tempnam($dir ? $dir : sys_get_temp_dir(), $prefix ? $prefix : '');
@@ -211,6 +221,10 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
     // Delete our work directory on exit.
     public function cleanup()
     {
+        if (empty($this->tmpDirs)) {
+            return;
+        }
+
         $fs = new Filesystem();
         $fs->remove($this->tmpDirs);
     }
