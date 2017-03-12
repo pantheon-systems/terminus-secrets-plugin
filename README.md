@@ -3,13 +3,28 @@
 [![Terminus v1.x Compatible](https://img.shields.io/badge/terminus-v1.x-green.svg)](https://github.com/pantheon-systems/terminus-secrets-plugin/tree/1.x)
 [![Terminus v0.x Compatible](https://img.shields.io/badge/terminus-v0.x-green.svg)](https://github.com/pantheon-systems/terminus-secrets-plugin/tree/0.x)
 
-Terminus Plugin that allows for manipulation of a simple 'secrets.json' file for use with Quicksilver on [Pantheon](https://www.pantheon.io) sites.
+Terminus Plugin that allows for manipulation of a simple `secrets.json` file for use with Quicksilver on [Pantheon](https://www.pantheon.io) sites.
 
 Adds a command 'secrets' to Terminus 1.x which you can use to add, fetch, remove and update. For a version that works with Terminus 0.x, see the [0.x branch](https://github.com/pantheon-systems/terminus-secrets-plugin/tree/0.x).
 
 Use as directed by Quicksilver examples.
 
 Be aware that since this manages a simple json file in the network attached storage, filesystem synchronization operations will affect the secrets. You should not use this method if your use-case is to have different secrets in different environments. For that, or for secrets that are sensitive, we recommend [Lockr](https://github.com/lockr/lockr-terminus).
+
+## Background
+
+This plugin writes entries into the file `~/files/private/secrets.json` (NOTE: This refers to a different `private` directory than the `private` directory used to store your Quicksilver scripts!). This file is, naturally enough, a JSON file containing multiple keys that is not included in your project's source code. The `terminus secrets` script will fetch this file, modify is as requested, and then write it back to the Pantheon site.
+
+Before this Terminus plugin can be used, the `secrets.json` file must be manually created across all environments via SFTP. This directory is **not** copied to `test` and `live` during deployments (as it is not tracked in the project repository); you must therefore individually set secrets on each environment where you would like them to be available.
+
+**Also, be aware that your secrets may be overwritten by filesystem sync operations. For instance, if you check the "pull files and database from Live" option when deploying to `TEST`, that will overwrite the `TEST` env with secrets (or a lack thereof) in `LIVE`. If you intend to use `secrets.json` for production, make sure you set the same file in all environments to avoid confusion.**
+
+## Installation
+For help installing, see [Manage Plugins](https://pantheon.io/docs/terminus/plugins/)
+```
+mkdir -p ~/.terminus/plugins
+composer create-project -d ~/.terminus/plugins pantheon-systems/terminus-secrets-plugin:~1
+```
 
 ## Configuration
 
@@ -38,21 +53,6 @@ terminus secrets:list site.env
 
 Learn more about Terminus and Terminus Plugins at:
 [https://pantheon.io/docs/terminus/plugins/](https://pantheon.io/docs/terminus/plugins/)
-
-## Installation
-For help installing, see [Manage Plugins](https://pantheon.io/docs/terminus/plugins/)
-```
-mkdir -p ~/.terminus/plugins
-composer create-project -d ~/.terminus/plugins pantheon-systems/terminus-secrets-plugin:~1
-```
-
-## Internals
-
-This plugin writes entries into the file `private/secrets.json`.  This file is, naturally enough, a json file containing multiple keys.  The `terminus secrets` script will fetch this file, modify is as requested, and then write it back to the Pantheon site.
-
-Note that the `private` directory is located one level above the local working copy of your git repository on your Pantheon application server. This directory is **not** copied to `test` and `live` during deployments; you must therefore individually set secrets on each environment where you would like them to be available.
-
-Also, be aware that your secrets may be overwritten by filesystem sync operations. For instance, if you check the "pull files and database from Live" option when deploying to Test, that will overrite the Test env with secrets (or a lack thereof) in Live. If you intend to use secrets.json for production, make sure you set the same file in all environments to avoid confusion.
 
 ## Help
 Run `terminus list secrets` for a complete list of available commands. Use `terminus help <command>` to get help on one command.
