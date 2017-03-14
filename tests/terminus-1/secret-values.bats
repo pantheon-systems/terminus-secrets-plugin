@@ -15,11 +15,11 @@
 
   # Fetch 'foo' back again
   run terminus secrets:show $TERMINUS_SITE.dev -y foo
-  [ $output == "bar" ]
+  [[ "$output" == *"bar"* ]]
 
   # Show all of the secrets
   run terminus secrets:list $TERMINUS_SITE.dev -y
-  [[ $output == *"foo: bar"* ]]
+  [[ "$output" == *"foo: bar"* ]]
 
   # Delete 'foo'
   terminus secrets:delete $TERMINUS_SITE.dev -y foo
