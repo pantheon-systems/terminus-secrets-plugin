@@ -1,0 +1,38 @@
+language: php
+
+branches:
+  # Only test the master branch and SemVer tags.
+  only:
+    - master
+    - /^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+.*$/
+
+env:
+  global:
+    - PATH=$PATH:$HOME/bin
+  matrix:
+    - TERMINUS_VERSION=1 TERMINUS_RC_DIR=$HOME/.terminus
+    - TERMINUS_VERSION=0 TERMINUS_RC_DIR=$HOME/terminus
+
+php:
+  - 7.1
+  - 5.5
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+before_script:
+  - if [ "$TERMINUS_VERSION" = "1" ]; then composer install --prefer-dist -n; fi;
+  - git clone https://github.com/sstephenson/bats.git $HOME/bats; $HOME/bats/install.sh $HOME
+  - composer global require -n "consolidation/cgr"
+  - cgr "pantheon-systems/terminus:^$TERMINUS_VERSION"
+  - terminus --version
+  # Link the project directory as a Terminus plugin.
+  - mkdir -p $TERMINUS_RC_DIR/plugins
+  - ln -s $(pwd) $TERMINUS_RC_DIR/plugins
+
+script:
+  - bats tests/terminus-$TERMINUS_VERSION
+
