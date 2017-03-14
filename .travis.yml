@@ -10,8 +10,8 @@ env:
   global:
     - PATH=$PATH:$HOME/bin:$HOME/.composer/vendor/bin
   matrix:
-    - TERMINUS_VERSION=1 TERMINUS_RC_DIR=$HOME/.terminus
-    - TERMINUS_VERSION=0 TERMINUS_RC_DIR=$HOME/terminus
+    - TERMINUS_VERSION=1 TERMINUS_RC_DIR=$HOME/.terminus TERMINUS_AUTH="auth:login"
+    - TERMINUS_VERSION=0 TERMINUS_RC_DIR=$HOME/terminus TERMINUS_AUTH="auth login"
 
 php:
   - 7.1
@@ -31,6 +31,8 @@ before_script:
   # Link the project directory as a Terminus plugin.
   - mkdir -p $TERMINUS_RC_DIR/plugins
   - ln -s $(pwd) $TERMINUS_RC_DIR/plugins
+  # Log in via Terminus
+  - terminus $TERMINUS_AUTH --machine-token=$TERMINUS_TOKEN
 
 script:
   - bats tests/terminus-$TERMINUS_VERSION
