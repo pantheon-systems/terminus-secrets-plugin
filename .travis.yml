@@ -8,7 +8,7 @@ branches:
 
 env:
   global:
-    - PATH=$PATH:$HOME/bin
+    - PATH=$PATH:$HOME/bin:$HOME/.composer/vendor/bin
   matrix:
     - TERMINUS_VERSION=1 TERMINUS_RC_DIR=$HOME/.terminus
     - TERMINUS_VERSION=0 TERMINUS_RC_DIR=$HOME/terminus
