@@ -59,16 +59,9 @@ Also, be aware that your secrets may be overwritten by filesystem sync operation
 This plugin is compatible with both Terminus 1.x and Terminus 0.x. This works because Terminus 1.x searches for commandfiles in `src/Commands`, and Terminus 0.x searches in `Commands`. In general, Terminus plugins should only support one version of Terminus. It is recommended to use the branches `1.x` and `0.x` for this purpose. The exception to this rule is Terminus plugins that have been widely installed in Continuous Integration scripts via `git clone` without using a `--branch` designation. In that case, placing both versions on the same branch can be helpful in maintaining backwards compatibility with these scripts.
 
 ## Testing
+To run the tests locally, just run `composer test`. The tests presume that Terminus 1.x is available as `terminus`, and Terminus 0.x is available as `terminus0`.
 
-To run the tests locally, [install bats](https://github.com/sstephenson/bats#installing-bats-from-source), and then run:
-
-`bats tests/terminus-0`
-
- * or *
- 
-`bats tests/terminus-1`
-
-The tests presume that Terminus 1.x is available as `terminus`, and Terminus 0.x is available as `terminus0`.
+To test only Terminus 1.x, run `composer bats-t0`.
 
 ## Help
 Run `terminus list secrets` for a complete list of available commands. Use `terminus help <command>` to get help on one command.

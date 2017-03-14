@@ -17,7 +17,7 @@ dependencies:
     - ~/.composer/cache
   override:
     - composer install --prefer-dist -n
-    - git clone https://github.com/sstephenson/bats.git $HOME/bats; $HOME/bats/install.sh $HOME
+    - composer install bats
     - composer global require -n "consolidation/cgr"
     # Install Terminus 1.x and add this project as a plugin
     - cgr "pantheon-systems/terminus:^1.1"
@@ -33,5 +33,4 @@ dependencies:
     - terminus auth:login --machine-token=$TERMINUS_TOKEN
 test:
   override:
-    - bats tests/terminus-1
-    - bats tests/terminus-0
+    - composer bats

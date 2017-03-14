@@ -10,5 +10,24 @@
         "terminus": {
             "compatible-version": "^0 || ^1"
         }
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^2.7"
+    },
+    "scripts": {
+        "install-bats": "if [ ! -f bin/bats ] ; then git clone https://github.com/sstephenson/bats.git; mkdir -p bin; bats/install.sh .; fi",
+        "bats-t0": "bin/bats tests/terminus-0",
+        "bats-t1": "bin/bats tests/terminus-0",
+        "bats": [
+            "@bats-t1",
+            "@bats-t0",
+        ],
+        "cs": "phpcs --standard=PSR2 -n src Commands",
+        "cbf": "phpcbf --standard=PSR2 -n src Commands",
+        "test": [
+            "@install-bats",
+            "@bats",
+            "@cs"
+        ]
     }
 }
