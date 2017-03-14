@@ -12,9 +12,9 @@
 
 @test "list all secrets commands" {
   run terminus list secrets
-  [ "$status" -eq 1 ]
   [[ $output == *"secrets:list"* ]]
   [[ $output == *"secrets:show"* ]]
   [[ $output == *"secrets:set"* ]]
   [[ $output == *"secrets:delete"* ]]
+  [ "$status" -eq 0 ]
 }
