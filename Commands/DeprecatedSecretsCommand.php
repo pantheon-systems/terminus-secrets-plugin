@@ -20,11 +20,12 @@ use Terminus\Session;
  *
  * @command secrets
  */
-class DeprecatedSecretsCommand extends TerminusCommand {
+class DeprecatedSecretsCommand extends TerminusCommand
+{
 
-  protected $sites;
-  protected $info;
-  protected $tmpDirs = [];
+    protected $sites;
+    protected $info;
+    protected $tmpDirs = [];
 
   /**
    * Object constructor
@@ -32,12 +33,13 @@ class DeprecatedSecretsCommand extends TerminusCommand {
    * @param array $options Options to construct the command object
    * @return SiteCommand
    */
-  public function __construct(array $options = []) {
-    parent::__construct($options);
-    $this->sites = new Sites();
-    // Insure that $workdir will be deleted on exit.
-    register_shutdown_function([$this, 'cleanup']);
-  }
+    public function __construct(array $options = [])
+    {
+        parent::__construct($options);
+        $this->sites = new Sites();
+        // Insure that $workdir will be deleted on exit.
+        register_shutdown_function([$this, 'cleanup']);
+    }
 
   /**
    * Set a secret value
@@ -60,14 +62,15 @@ class DeprecatedSecretsCommand extends TerminusCommand {
    * [--env=<env>]
    * : Site environment
    */
-  public function set($args, $assoc_args) {
-    $secretValues = $this->downloadSecrets($assoc_args);
-    $key = array_shift($args);
-    $value = array_shift($args);
-    $secretValues[$key] = $value;
+    public function set($args, $assoc_args)
+    {
+        $secretValues = $this->downloadSecrets($assoc_args);
+        $key = array_shift($args);
+        $value = array_shift($args);
+        $secretValues[$key] = $value;
 
-    $this->uploadSecrets($assoc_args, $secretValues);
-  }
+        $this->uploadSecrets($assoc_args, $secretValues);
+    }
 
   /**
    * Delete a secret value
@@ -82,13 +85,14 @@ class DeprecatedSecretsCommand extends TerminusCommand {
    * [--env=<env>]
    * : Site environment
    */
-  public function delete($args, $assoc_args) {
-    $secretValues = $this->downloadSecrets($assoc_args);
-    $key = array_shift($args);
-    unset($secretValues[$key]);
+    public function delete($args, $assoc_args)
+    {
+        $secretValues = $this->downloadSecrets($assoc_args);
+        $key = array_shift($args);
+        unset($secretValues[$key]);
 
-    $this->uploadSecrets($assoc_args, $secretValues);
-  }
+        $this->uploadSecrets($assoc_args, $secretValues);
+    }
 
   /**
    * Show a secret value
@@ -103,103 +107,110 @@ class DeprecatedSecretsCommand extends TerminusCommand {
    * [--env=<env>]
    * : Site environment
    */
-  public function show($args, $assoc_args) {
-    $secretValues = $this->downloadSecrets($assoc_args);
-    if (count($args) > 1) {
-      $key = array_shift($args);
-      $this->output()->outputValue($secretValues[$key]);
+    public function show($args, $assoc_args)
+    {
+        $secretValues = $this->downloadSecrets($assoc_args);
+        if (count($args) > 1) {
+            $key = array_shift($args);
+            $this->output()->outputValue($secretValues[$key]);
+        } else {
+            // TODO: can we get outputRecord to preserve rather than ucfirst the 'key' field?
+            $this->output()->outputRecord($secretValues);
+        }
     }
-    else {
-      // TODO: can we get outputRecord to preserve rather than ucfirst the 'key' field?
-      $this->output()->outputRecord($secretValues);
+
+    protected function getSiteInfo($assoc_args)
+    {
+        if (!isset($this->info)) {
+            $site        = $this->sites->get(
+                $this->input()->siteName(array('args' => $assoc_args))
+            );
+            $env_id      = $this->input()->env(array('args' => $assoc_args, 'site' => $site));
+            $environment = $site->environments->get($env_id);
+            $this->info        = $environment->connectionInfo();
+        }
+        return $this->info;
     }
-  }
 
-  protected function getSiteInfo($assoc_args) {
-    if (!isset($this->info)) {
-      $site        = $this->sites->get(
-        $this->input()->siteName(array('args' => $assoc_args))
-      );
-      $env_id      = $this->input()->env(array('args' => $assoc_args, 'site' => $site));
-      $environment = $site->environments->get($env_id);
-      $this->info        = $environment->connectionInfo();
+    protected function getSftpCommand($assoc_args)
+    {
+        $info = $this->getSiteInfo($assoc_args);
+        $sftpCommand = $info['sftp_command'];
+        return $sftpCommand;
     }
-    return $this->info;
-  }
 
-  protected function getSftpCommand($assoc_args) {
-    $info = $this->getSiteInfo($assoc_args);
-    $sftpCommand = $info['sftp_command'];
-    return $sftpCommand;
-  }
-
-  protected function downloadSecrets($assoc_args) {
-    $sftpCommand = $this->getSftpCommand($assoc_args);
-    $workdir = $this->tempdir();
-    chdir($workdir);
-    exec("(echo 'cd files' && echo 'cd private' && echo 'get secrets.json') | $sftpCommand", $fetch_output, $fetch_status);
-    // if ($fetch_status) { ... }
-    if (file_exists('secrets.json')) {
-      $secrets = file_get_contents('secrets.json');
-      $secretValues = (array)json_decode($secrets);
-      return $secretValues;
+    protected function downloadSecrets($assoc_args)
+    {
+        $sftpCommand = $this->getSftpCommand($assoc_args);
+        $workdir = $this->tempdir();
+        chdir($workdir);
+        exec("(echo 'cd files' && echo 'cd private' && echo 'get secrets.json') | $sftpCommand", $fetch_output, $fetch_status);
+        // if ($fetch_status) { ... }
+        if (file_exists('secrets.json')) {
+            $secrets = file_get_contents('secrets.json');
+            $secretValues = (array)json_decode($secrets);
+            return $secretValues;
+        } else {
+            echo "Initializing secrets.json\n";
+            exec("touch secrets.json");
+            exec("(echo 'cd files' && echo 'mkdir private' && echo 'cd private' && echo 'put secrets.json') | $sftpCommand", $fetch_output, $fetch_status);
+        }
+        return [];
     }
-    else {
-      echo "Initializing secrets.json\n";
-      exec("touch secrets.json");
-      exec("(echo 'cd files' && echo 'mkdir private' && echo 'cd private' && echo 'put secrets.json') | $sftpCommand", $fetch_output, $fetch_status);
+
+    protected function uploadSecrets($assoc_args, $secretValues)
+    {
+        $sftpCommand = $this->getSftpCommand($assoc_args);
+        $workdir = $this->tempdir();
+        chdir($workdir);
+
+        file_put_contents('secrets.json', json_encode($secretValues));
+
+        // Upload secrets.json, if possible
+        exec("(echo 'cd files' && echo 'cd private' && echo 'put secrets.json') | $sftpCommand", $upload_output, $upload_status);
+        // if ($uplaod_status) { ... }
     }
-    return [];
-  }
-
-  protected function uploadSecrets($assoc_args, $secretValues) {
-    $sftpCommand = $this->getSftpCommand($assoc_args);
-    $workdir = $this->tempdir();
-    chdir($workdir);
-
-    file_put_contents('secrets.json', json_encode($secretValues));
-
-    // Upload secrets.json, if possible
-    exec("(echo 'cd files' && echo 'cd private' && echo 'put secrets.json') | $sftpCommand", $upload_output, $upload_status);
-    // if ($uplaod_status) { ... }
-  }
 
   // Create a temporary directory
   // TODO: Is there a Terminus library we could use to do this?
-  public function tempdir($dir=FALSE, $prefix='php') {
-    $tempfile=tempnam($dir ? $dir : sys_get_temp_dir(), $prefix ? $prefix : '');
-    if (file_exists($tempfile)) {
-      unlink($tempfile);
+    public function tempdir($dir = false, $prefix = 'php')
+    {
+        $tempfile=tempnam($dir ? $dir : sys_get_temp_dir(), $prefix ? $prefix : '');
+        if (file_exists($tempfile)) {
+            unlink($tempfile);
+        }
+        mkdir($tempfile);
+        if (is_dir($tempfile)) {
+            $this->tmpDirs[] = $tempfile;
+            return $tempfile;
+        }
     }
-    mkdir($tempfile);
-    if (is_dir($tempfile)) {
-      $this->tmpDirs[] = $tempfile;
-      return $tempfile;
-    }
-  }
 
   // Recursively remove directories
   // TODO: Is there a Terminus library we could use to do this?
-  public static function rrmdir($dir) {
-    if (is_dir($dir)) {
-      $objects = scandir($dir);
-      foreach ($objects as $object) {
-        if ($object != "." && $object != "..") {
-          if (is_dir($dir."/".$object))
-            rrmdir($dir."/".$object);
-          else
-            unlink($dir."/".$object);
+    public static function rrmdir($dir)
+    {
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object != "." && $object != "..") {
+                    if (is_dir($dir."/".$object)) {
+                        rrmdir($dir."/".$object);
+                    } else {
+                        unlink($dir."/".$object);
+                    }
+                }
+            }
+            rmdir($dir);
         }
-      }
-      rmdir($dir);
     }
-  }
 
   // Delete our work directory on exit.
-  public function cleanup() {
-    global $workdir;
-    foreach ($this->tmpDirs as $dir) {
-      static::rrmdir($dir);
+    public function cleanup()
+    {
+        global $workdir;
+        foreach ($this->tmpDirs as $dir) {
+            static::rrmdir($dir);
+        }
     }
-  }
 }

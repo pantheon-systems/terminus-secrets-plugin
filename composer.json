@@ -20,7 +20,7 @@
         "bats-t1": "bin/bats tests/terminus-0",
         "bats": [
             "@bats-t1",
-            "@bats-t0",
+            "@bats-t0"
         ],
         "cs": "phpcs --standard=PSR2 -n src Commands",
         "cbf": "phpcbf --standard=PSR2 -n src Commands",
