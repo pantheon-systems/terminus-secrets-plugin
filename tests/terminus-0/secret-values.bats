@@ -6,21 +6,18 @@
 # Test to see if we can get and set secret values on our test site
 #
 
-@test "set and retrieve secrets" {
-  # Delete all of the secrets
-  terminus secrets delete --site=ci-terminus-secrets --env=dev -y
-
+@test "set and retrieve secrets for t0" {
   # Set 'foo' to 'bar'
-  terminus secrets set --site=ci-terminus-secrets --env=dev -y foo bar
+  terminus0 secrets set --site=$TERMINUS_SITE --env=dev foo bar
 
   # Fetch 'foo' back again
-  run terminus secrets show --site=ci-terminus-secrets --env=dev -y foo
-  [ $output == "bar" ]
+  run terminus0 secrets show --site=$TERMINUS_SITE --env=dev
+  [[ "$output" == *"bar"* ]]
 
-  # Show all of the secrets
-  run terminus secrets list --site=ci-terminus-secrets --env=dev -y
-  [[ $output == *"foo: bar"* ]]
+  # Set 'foo' to 'bar'
+  terminus0 secrets set --site=$TERMINUS_SITE --env=dev foo baz
 
-  # Delete 'foo'
-  terminus secrets delete --site=ci-terminus-secrets --env=dev -y foo
+  # Fetch 'foo' back again
+  run terminus0 secrets show --site=$TERMINUS_SITE --env=dev
+  [[ "$output" == *"baz"* ]]
 }

@@ -68,7 +68,7 @@ To run the tests locally, [install bats](https://github.com/sstephenson/bats#ins
  
 `bats tests/terminus-1`
 
-The tests presume that Terminus is available as `terminus`, so in general, you will only be able to run one of the test suites, depending on whether you have installed Terminus 1.x or Terminus 0.x.
+The tests presume that Terminus 1.x is available as `terminus`, and Terminus 0.x is available as `terminus0`.
 
 ## Help
 Run `terminus list secrets` for a complete list of available commands. Use `terminus help <command>` to get help on one command.

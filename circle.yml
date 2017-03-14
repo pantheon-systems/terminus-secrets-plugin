@@ -1,0 +1,38 @@
+#
+# Test the Terminus secrets plugin
+#
+machine:
+  timezone:
+    America/Chicago
+  php:
+    version: 7.0.11
+  environment:
+    TERMINUS_VERSION: 1
+    TERMINUS_RC_DIR:
+    TERMINUS_AUTH: auth:login
+    PATH: $PATH:~/.composer/vendor/bin:~/.config/composer/vendor/bin:$HOME/bin
+
+dependencies:
+  cache_directories:
+    - ~/.composer/cache
+  override:
+    - composer install --prefer-dist -n
+    - git clone https://github.com/sstephenson/bats.git $HOME/bats; $HOME/bats/install.sh $HOME
+    - composer global require -n "consolidation/cgr"
+    # Install Terminus 1.x and add this project as a plugin
+    - cgr "pantheon-systems/terminus:^1"
+    - mkdir -p $HOME/.terminus/plugins
+    - ln -s $(pwd) $HOME/.terminus/plugins
+    # Install Terminus 0.x and add this project as a plugin
+    - mkdir -p $HOME/terminus0
+    - composer --working-dir=$HOME/terminus0 require "pantheon-systems/terminus:^0"
+    - ln -s $HOME/terminus0/vendor/bin/terminus  $HOME/bin/terminus0
+    - mkdir -p $HOME/terminus/plugins
+    - ln -s $(pwd) $HOME/terminus/plugins
+  post:
+    - terminus auth:login --machine-token=$TERMINUS_TOKEN
+test:
+  override:
+    - bats tests/terminus-1
+    - terminus auth login --machine-token=$TERMINUS_TOKEN
+    - bats tests/terminus-0
