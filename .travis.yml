@@ -1,40 +1,33 @@
 language: php
-
 branches:
-  # Only test the 1.x branch and SemVer tags.
   only:
-    - 1.x
-    - /^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+.*$/
-
+  - 1.x
+  - "/^[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+.*$/"
 env:
   global:
-    - PATH=$PATH:$HOME/bin:$HOME/.composer/vendor/bin
+  - PATH=$PATH:$HOME/bin:$HOME/.composer/vendor/bin
   matrix:
-    - TERMINUS_VERSION=1 TERMINUS_RC_DIR=$HOME/.terminus TERMINUS_AUTH="auth:login"
-    - TERMINUS_VERSION=0 TERMINUS_RC_DIR=$HOME/terminus TERMINUS_AUTH="auth login"
-
+  - TERMINUS_VERSION=1 TERMINUS_RC_DIR=$HOME/.terminus TERMINUS_AUTH="auth:login"
+  - TERMINUS_VERSION=0 TERMINUS_RC_DIR=$HOME/terminus TERMINUS_AUTH="auth login"
 php:
-  - 7.1
-  - 5.5
-
+- 7.1
+- 5.5
 sudo: false
-
 cache:
   directories:
-    - $HOME/.composer/cache
-
+  - "$HOME/.composer/cache"
+before_install:
+- echo -e "StrictHostKeyChecking no\n" >> ~/.ssh/config
+- openssl aes-256-cbc -K $encrypted_b6040528f197_key -iv $encrypted_b6040528f197_iv
+  -in private_key.enc -out $HOME/.ssh/id_ras -d
 before_script:
-  - echo -e "StrictHostKeyChecking no\n" >> ~/.ssh/config
-  - echo $PRIVATE_KEY | tr "%" "\n" > ~/.ssh/id_ras
-  - composer install --prefer-dist -n
-  - git clone https://github.com/sstephenson/bats.git $HOME/bats; $HOME/bats/install.sh $HOME
-  - composer global require -n "consolidation/cgr"
-  - cgr "pantheon-systems/terminus:^$TERMINUS_VERSION"
-  # Link the project directory as a Terminus plugin.
-  - mkdir -p $TERMINUS_RC_DIR/plugins
-  - ln -s $(pwd) $TERMINUS_RC_DIR/plugins
-  # Log in via Terminus
-  - terminus $TERMINUS_AUTH --machine-token=$TERMINUS_TOKEN
-
+- composer install --prefer-dist -n
+- git clone https://github.com/sstephenson/bats.git $HOME/bats; $HOME/bats/install.sh
+  $HOME
+- composer global require -n "consolidation/cgr"
+- cgr "pantheon-systems/terminus:^$TERMINUS_VERSION"
+- mkdir -p $TERMINUS_RC_DIR/plugins
+- ln -s $(pwd) $TERMINUS_RC_DIR/plugins
+- terminus $TERMINUS_AUTH --machine-token=$TERMINUS_TOKEN
 script:
-  - bats tests/terminus-$TERMINUS_VERSION
+- bats tests/terminus-$TERMINUS_VERSION

@@ -54,5 +54,21 @@ Note that the `private` directory is located one level above the local working c
 
 Also, be aware that your secrets may be overwritten by filesystem sync operations. For instance, if you check the "pull files and database from Live" option when deploying to Test, that will overrite the Test env with secrets (or a lack thereof) in Live. If you intend to use secrets.json for production, make sure you set the same file in all environments to avoid confusion.
 
+## Terminus 0.x Version
+
+This plugin is compatible with both Terminus 1.x and Terminus 0.x. This works because Terminus 1.x searches for commandfiles in `src/Commands`, and Terminus 0.x searches in `Commands`. In general, Terminus plugins should only support one version of Terminus. It is recommended to use the branches `1.x` and `0.x` for this purpose. The exception to this rule is Terminus plugins that have been widely installed in Continuous Integration scripts via `git clone` without using a `--branch` designation. In that case, placing both versions on the same branch can be helpful in maintaining backwards compatibility with these scripts.
+
+## Testing
+
+To run the tests locally, [install bats](https://github.com/sstephenson/bats#installing-bats-from-source), and then run:
+
+`bats tests/terminus-0`
+
+ * or *
+ 
+`bats tests/terminus-1`
+
+The tests presume that Terminus is available as `terminus`, so in general, you will only be able to run one of the test suites, depending on whether you have installed Terminus 1.x or Terminus 0.x.
+
 ## Help
 Run `terminus list secrets` for a complete list of available commands. Use `terminus help <command>` to get help on one command.
