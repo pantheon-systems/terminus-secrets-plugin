@@ -12,9 +12,8 @@
 
 @test "list all secrets commands" {
   run terminus help secrets
-  [[ $output == *"secrets:list"* ]]
-  [[ $output == *"secrets:show"* ]]
-  [[ $output == *"secrets:set"* ]]
-  [[ $output == *"secrets:delete"* ]]
+  [[ $output == *"Set a secret value"* ]]
+  [[ $output == *"Show a secret value"* ]]
+  [[ $output == *"Delete a secret value"* ]]
   [ "$status" -eq 0 ]
 }
