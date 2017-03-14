@@ -24,6 +24,7 @@ cache:
     - $HOME/.composer/cache
 
 before_script:
+  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
   - composer install --prefer-dist -n
   - git clone https://github.com/sstephenson/bats.git $HOME/bats; $HOME/bats/install.sh $HOME
   - composer global require -n "consolidation/cgr"
