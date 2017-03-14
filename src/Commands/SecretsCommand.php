@@ -86,7 +86,7 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
      * @param string $site_env_id Name of the environment to run the drush command on.
      * @param string $key Item to delete (or empty to delete everything)
      */
-    public function delete($site_env_id, $key, $options = ['file' => 'secrets.json'])
+    public function delete($site_env_id, $key = '', $options = ['file' => 'secrets.json'])
     {
         $secretValues = [];
         if (!empty($key)) {

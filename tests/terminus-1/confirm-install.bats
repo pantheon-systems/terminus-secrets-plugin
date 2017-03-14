@@ -6,11 +6,11 @@
 # Ensure that Terminus and the Secrets plugin have been installed correctly
 #
 
-@test "confirm terminus version" {
+@test "confirm terminus version for t1" {
   terminus --version
 }
 
-@test "list all secrets commands" {
+@test "list all secrets commands for t1" {
   run terminus list secrets
   [[ $output == *"secrets:list"* ]]
   [[ $output == *"secrets:show"* ]]
