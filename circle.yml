@@ -17,7 +17,7 @@ dependencies:
     - ~/.composer/cache
   override:
     - composer install --prefer-dist -n
-    - composer install bats
+    - composer install-bats
     - composer global require -n "consolidation/cgr"
     # Install Terminus 1.x and add this project as a plugin
     - cgr "pantheon-systems/terminus:^1.1"
