@@ -16,8 +16,8 @@
     },
     "scripts": {
         "install-bats": "if [ ! -f bin/bats ] ; then git clone https://github.com/sstephenson/bats.git; mkdir -p bin; bats/install.sh .; fi",
-        "bats-t0": "bin/bats tests/terminus-0",
-        "bats-t1": "bin/bats tests/terminus-0",
+        "bats-t0": "TERMINUS_PLUGINS_DIR=.. bin/bats tests/terminus-0",
+        "bats-t1": "TERMINUS_PLUGINS_DIR=.. bin/bats tests/terminus-0",
         "bats": [
             "@bats-t1",
             "@bats-t0"
