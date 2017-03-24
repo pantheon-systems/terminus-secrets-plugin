@@ -31,7 +31,7 @@ composer create-project -d ~/.terminus/plugins pantheon-systems/terminus-secrets
 
 This plugin requires no configuration to use.
 
-## Examples
+## Usage
 Write "value" into "key" in the "test" environment of "sitename".
 ```
 terminus secrets:set site.env key value
@@ -51,6 +51,8 @@ Show all available keys in the "test" environment of "sitename"
 ```
 terminus secrets:list site.env
 ```
+
+You may pass the `--file` option to this terminus plugin to read/write keys to a file named something other than `secrets.json`; this can be exceedingly helpful when storing configuration keys that may differ between environments as this prevents your environment-specific files getting overwritten by database and file clone operations.
 
 Learn more about Terminus and Terminus Plugins at:
 [https://pantheon.io/docs/terminus/plugins/](https://pantheon.io/docs/terminus/plugins/)
