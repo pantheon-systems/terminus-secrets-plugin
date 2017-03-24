@@ -65,13 +65,14 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
             'file' => 'secrets.json',
             'clear' => false,
             'skip-if-empty' => false,
-        ])
-    {
+        ]
+    ) {
+    
         if ($options['skip-if-empty'] && empty($value)) {
             return;
         }
         if (!$options['clear']) {
-           $secretValues = $this->downloadSecrets($site_env_id, $options['file']);
+            $secretValues = $this->downloadSecrets($site_env_id, $options['file']);
         }
         $secretValues[$key] = $value;
 
@@ -86,7 +87,7 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
      * @param string $site_env_id Name of the environment to run the drush command on.
      * @param string $key Item to delete (or empty to delete everything)
      */
-    public function delete($site_env_id, $key, $options = ['file' => 'secrets.json'])
+    public function delete($site_env_id, $key = '', $options = ['file' => 'secrets.json'])
     {
         $secretValues = [];
         if (!empty($key)) {
@@ -204,7 +205,7 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
     }
 
     // Create a temporary directory
-    public function tempdir($dir=FALSE, $prefix='php')
+    public function tempdir($dir = false, $prefix = 'php')
     {
         $tempfile=tempnam($dir ? $dir : sys_get_temp_dir(), $prefix ? $prefix : '');
         if (file_exists($tempfile)) {
