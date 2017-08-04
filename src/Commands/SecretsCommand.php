@@ -149,8 +149,9 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
      * @param string $site_env_id Remote site
      * @param string $src Source path to copy from. Start with ":" for remote.
      * @param string $dest Destination path to copy to. Start with ":" for remote.
+     * @param boolean $ignoreIfNotExists Silently fail and do not return error if remote source does not exist.
      */
-    protected function rsync($site_env_id, $src, $dest)
+    protected function rsync($site_env_id, $src, $dest, $ignoreIfNotExists = false)
     {
         list($site, $env) = $this->getSiteEnv($site_env_id);
         $env_id = $env->getName();
@@ -163,15 +164,16 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
         $src = preg_replace('/^:/', $siteAddress, $src);
         $dest = preg_replace('/^:/', $siteAddress, $dest);
 
-        $this->passthru("rsync -rlIvz --ipv4 --exclude=.git -e 'ssh -p 2222' $src $dest >/dev/null 2>&1");
+        $this->passthru("rsync -rlIvz --ipv4 --exclude=.git -e 'ssh -p 2222' $src $dest >/dev/null 2>&1",
+            $ignoreIfNotExists == true ? [0, 23] : [0]);
     }
 
-    protected function passthru($command)
+    protected function passthru($command, $acceptedResults = [0])
     {
         $result = 0;
         passthru($command, $result);
 
-        if ($result != 0) {
+        if (!in_array($result, $acceptedResults)) {
             throw new TerminusException('Command `{command}` failed with exit code {status}', ['command' => $command, 'status' => $result]);
         }
     }
@@ -182,7 +184,7 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
     protected function downloadSecrets($site_env_id, $filename)
     {
         $workdir = $this->tempdir();
-        $this->rsync($site_env_id, ":files/private/$filename", $workdir);
+        $this->rsync($site_env_id, ":files/private/$filename", $workdir, true);
 
         if (file_exists("$workdir/$filename")) {
             $secrets = file_get_contents("$workdir/$filename");
