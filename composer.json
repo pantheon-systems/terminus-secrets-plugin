@@ -15,11 +15,17 @@
     },
     "scripts": {
         "install-bats": "if [ ! -f bin/bats ] ; then git clone https://github.com/sstephenson/bats.git; mkdir -p bin; bats/install.sh .; fi",
+        "install-phpcs": "mkdir -p tools/phpcs && cd tools/phpcs && COMPOSER_BIN_DIR=../../vendor/bin composer require squizlabs/php_codesniffer:^2.7",
+        "install-phpunit": "mkdir -p tools/phpunit && cd tools/phpunit && COMPOSER_BIN_DIR=../../vendor/bin composer require phpunit/phpunit:^6",
         "bats": "TERMINUS_PLUGINS_DIR=.. bin/bats tests/terminus-1",
         "cs": "phpcs --standard=PSR2 -n src Commands",
         "cbf": "phpcbf --standard=PSR2 -n src Commands",
-        "test": [
+        "install-tools": [
             "@install-bats",
+            "@install-phpcs",
+            "@install-phpunit"
+        ],
+        "test": [
             "@bats",
             "@cs"
         ]

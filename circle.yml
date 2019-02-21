@@ -14,7 +14,7 @@ dependencies:
     - ~/.composer/cache
   override:
     - composer install --prefer-dist -n
-    - composer install-bats
+    - composer install-tools
     - composer global require -n "consolidation/cgr"
     - cgr "pantheon-systems/terminus:^2"
     - mkdir -p $HOME/terminus0
