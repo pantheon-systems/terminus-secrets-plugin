@@ -14,12 +14,12 @@
     "require-dev": {
     },
     "scripts": {
-        "install-bats": "if [ ! -f bin/bats ] ; then git clone https://github.com/sstephenson/bats.git; mkdir -p bin; bats/install.sh .; fi",
+        "install-bats": "if [ ! -f tools/bin/bats ] ; then git clone https://github.com/sstephenson/bats.git tools/bats; tools/bats/install.sh tools; fi",
         "install-phpcs": "mkdir -p tools/phpcs && cd tools/phpcs && COMPOSER_BIN_DIR=../../vendor/bin composer require squizlabs/php_codesniffer:^2.7",
         "install-phpunit": "mkdir -p tools/phpunit && cd tools/phpunit && COMPOSER_BIN_DIR=../../vendor/bin composer require phpunit/phpunit:^6",
         "functional": "TERMINUS_PLUGINS_DIR=.. PATH=tools/bin:$PATH bats tests/terminus-1",
-        "cs": "phpcs --standard=PSR2 -n src Commands",
-        "cbf": "phpcbf --standard=PSR2 -n src Commands",
+        "cs": "PATH=tools/bin:$PATH phpcs --standard=PSR2 -n src Commands",
+        "cbf": "PATH=tools/bin:$PATH phpcbf --standard=PSR2 -n src Commands",
         "install-tools": [
             "@install-bats",
             "@install-phpcs",

@@ -164,8 +164,10 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
         $src = preg_replace('/^:/', $siteAddress, $src);
         $dest = preg_replace('/^:/', $siteAddress, $dest);
 
-        $this->passthru("rsync -rlIvz --ipv4 --exclude=.git -e 'ssh -p 2222' $src $dest >/dev/null 2>&1",
-            $ignoreIfNotExists == true ? [0, 23] : [0]);
+        $this->passthru(
+            "rsync -rlIvz --ipv4 --exclude=.git -e 'ssh -p 2222' $src $dest >/dev/null 2>&1",
+            $ignoreIfNotExists == true ? [0, 23] : [0]
+        );
     }
 
     protected function passthru($command, $acceptedResults = [0])
