@@ -16,7 +16,7 @@ dependencies:
     - composer install --prefer-dist -n
     - composer install-bats
     - composer global require -n "consolidation/cgr"
-    - cgr "pantheon-systems/terminus:^1.1"
+    - cgr "pantheon-systems/terminus:^2"
     - mkdir -p $HOME/terminus0
     - composer --working-dir=$HOME/terminus0 require "pantheon-systems/terminus:^0"
     - ln -s $HOME/terminus0/vendor/bin/terminus $HOME/bin/terminus0
