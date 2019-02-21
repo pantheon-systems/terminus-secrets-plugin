@@ -1,0 +1,33 @@
+defaults: &defaults
+  docker:
+    - image: quay.io/pantheon-public/terminus-plugin-test:2.x
+  working_directory: ~/work/terminus_pantheor_plugin
+  environment:
+    BASH_ENV: ~/.bashrc
+    TZ: "/usr/share/zoneinfo/America/Los_Angeles"
+    TERM: dumb
+
+version: 2
+jobs:
+    test:
+        <<: *defaults
+        steps:
+            - checkout
+            - run:
+                name: Set up environment
+                command: ./.circleci/set-up-globals.sh
+            - run:
+                name: Check Terminus version
+                command: terminus --version
+            - run:
+                name: Dependencies
+                command: composer install
+            - run:
+                name: Test
+                command: composer test
+
+workflows:
+  version: 2
+  build_test:
+    jobs:
+      - test
