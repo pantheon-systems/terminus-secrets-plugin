@@ -80,4 +80,4 @@ or
 ```
 keyName_multiDevName: value
 ```
-There is no nesting of keys in the json file so all keys are at the root of the json file.
+There is no arrays of keys in the json file so all keys are at the root.
