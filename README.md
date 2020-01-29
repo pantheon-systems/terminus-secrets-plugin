@@ -16,9 +16,15 @@ Be aware that since this manages a simple json file in the network attached stor
 
 This plugin writes entries into the file `~/files/private/secrets.json` (NOTE: This refers to a different `private` directory than the `private` directory used to store your Quicksilver scripts!). This file is, naturally enough, a JSON file containing multiple keys that is not included in your project's source code. The `terminus secrets` script will fetch this file, modify is as requested, and then write it back to the Pantheon site.
 
-Before this Terminus plugin can be used, the `secrets.json` file must be manually created across all environments via SFTP. This directory is **not** copied to `test` and `live` during deployments (as it is not tracked in the project repository); you must therefore individually set secrets on each environment where you would like them to be available.
+Before this Terminus plugin can be used, the `secrets.json` file must be created in each environment. To create the file call the secrets set command and add a key. This will automatically create the file in that environment.
+```
+terminus secrets:set site.env key value
+```
+The secrets directory is **not** copied to `test` and `live` during deployments (as it is not tracked in the project repository); you must therefore individually set secrets on each environment where you would like them to be available.
 
 **Also, be aware that your secrets may be overwritten by filesystem sync operations. For instance, if you check the "pull files and database from Live" option when deploying to `TEST`, that will overwrite the `TEST` env with secrets (or a lack thereof) in `LIVE`. If you intend to use `secrets.json` for production, make sure you set the same file in all environments to avoid confusion.**
+
+You can create all your keys in the live environment and then Clone files to other environments to copy the keys.
 
 ## Installation
 For help installing, see [Manage Plugins](https://pantheon.io/docs/terminus/plugins/)
@@ -63,3 +69,15 @@ This plugin is compatible with both Terminus 1.x and Terminus 0.x. This works be
 
 ## Help
 Run `terminus list secrets` for a complete list of available commands. Use `terminus help <command>` to get help on one command.
+
+## Tip
+If you need multiple versions of a key for different environments or one for development and one for production add them all with a naming structure that helps when listing the keys
+```
+keyName_production: value
+keyName_development: value
+```
+or
+```
+keyName_multiDevName: value
+```
+There is no arrays of keys in the json file so all keys are at the root.
