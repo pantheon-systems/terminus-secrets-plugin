@@ -40,22 +40,22 @@ This plugin requires no configuration to use.
 ## Usage
 Write "value" into "key" in the "test" environment of "sitename".
 ```
-terminus secrets:set site.env key value
+terminus secrets:set sitename.env key value
 ```
 
 Remove the secret "key" in the "test" environment of "sitename".
 ```
-terminus secrets:delete site.env key
+terminus secrets:delete sitename.env key
 ```
 
 Show current value of "key" in the "test" environment of "sitename".
 ```
-terminus secrets:show site.env key
+terminus secrets:show sitename.env key
 ```
 
 Show all available keys in the "test" environment of "sitename"
 ```
-terminus secrets:list site.env
+terminus secrets:list sitename.env
 ```
 
 You may pass the `--file` option to this terminus plugin to read/write keys to a file named something other than `secrets.json`; this can be exceedingly helpful when storing configuration keys that may differ between environments as this prevents your environment-specific files getting overwritten by database and file clone operations.
