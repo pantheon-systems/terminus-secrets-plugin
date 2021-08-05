@@ -15,6 +15,7 @@
   [[ $output == *"secrets:list"* ]]
   [[ $output == *"secrets:show"* ]]
   [[ $output == *"secrets:set"* ]]
+  [[ $output == *"secrets:get"* ]]
   [[ $output == *"secrets:delete"* ]]
   [ "$status" -eq 0 ]
 }
