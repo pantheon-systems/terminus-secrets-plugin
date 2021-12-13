@@ -30,17 +30,17 @@ You can create all your keys in the live environment and then Clone files to oth
 
 For help installing, see [Manage Plugins](https://pantheon.io/docs/terminus/plugins/)
 
-### Installing for Terminus <= 2.x
+### Installation for Terminus 3.x
+Terminus now has plugin management built in to it.
+
+`terminus self:plugin:install pantheon-systems/terminus-secrets-plugin`
+
+### Installing for Terminus 2.x
 
 ```
 mkdir -p ~/.terminus/plugins
 composer create-project -d ~/.terminus/plugins pantheon-systems/terminus-secrets-plugin:~1
 ```
-
-### Installation for Terminus >= 3.x
-Terminus now has plugin management built in to it.
-
-`terminus self:plugin:install pantheon-systems/terminus-secrets-plugin`
 
 ## Configuration
 
