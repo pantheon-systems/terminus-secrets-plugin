@@ -27,11 +27,20 @@ The secrets directory is **not** copied to `test` and `live` during deployments 
 You can create all your keys in the live environment and then Clone files to other environments to copy the keys.
 
 ## Installation
+
 For help installing, see [Manage Plugins](https://pantheon.io/docs/terminus/plugins/)
+
+### Installing for Terminus <= 2.x
+
 ```
 mkdir -p ~/.terminus/plugins
 composer create-project -d ~/.terminus/plugins pantheon-systems/terminus-secrets-plugin:~1
 ```
+
+### Installation for Terminus >= 3.x
+Terminus now has plugin management built in to it.
+
+`terminus self:plugin:install pantheon-systems/terminus-secrets-plugin`
 
 ## Configuration
 
