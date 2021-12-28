@@ -1,12 +1,11 @@
 # Terminus Secrets Plugin
 
 [![CircleCI](https://circleci.com/gh/pantheon-systems/terminus-secrets-plugin.svg?style=shield)](https://circleci.com/gh/pantheon-systems/terminus-secrets-plugin)
-[![Terminus v1.x Compatible](https://img.shields.io/badge/terminus-v1.x-green.svg)](https://github.com/pantheon-systems/terminus-secrets-plugin/tree/1.x)
-[![Terminus v0.x Compatible](https://img.shields.io/badge/terminus-v0.x-green.svg)](https://github.com/pantheon-systems/terminus-secrets-plugin/tree/0.x)
+[![Terminus v2.x - v3.x Compatible](https://img.shields.io/badge/terminus-2.x%20--%203.x-green.svg)](https://github.com/pantheon-systems/terminus-secrets-plugin/tree/1.x)
 
 Terminus Plugin that allows for manipulation of a simple `secrets.json` file for use with Quicksilver on [Pantheon](https://www.pantheon.io) sites.
 
-Adds a command 'secrets' to Terminus 1.x which you can use to add, fetch, remove and update. For a version that works with Terminus 0.x, see the [0.x branch](https://github.com/pantheon-systems/terminus-secrets-plugin/tree/0.x).
+Adds a command 'secrets' to Terminus which you can use to add, fetch, remove and update.
 
 Use as directed by Quicksilver examples.
 
@@ -27,11 +26,18 @@ The secrets directory is **not** copied to `test` and `live` during deployments 
 You can create all your keys in the live environment and then Clone files to other environments to copy the keys.
 
 ## Installation
-For help installing, see [Manage Plugins](https://pantheon.io/docs/terminus/plugins/)
+
+To install this plugin using Terminus 3:
 ```
+terminus self:plugin:install terminus-secrets-plugin
+```
+
+On older versions of Terminus:
+```bash
 mkdir -p ~/.terminus/plugins
-composer create-project -d ~/.terminus/plugins pantheon-systems/terminus-secrets-plugin:~1
+composer create-project -d ~/.terminus/plugins pantheon-systems/terminus-secrets-plugin
 ```
+For help installing, see [Manage Plugins](https://pantheon.io/docs/terminus/plugins/).
 
 ## Configuration
 
@@ -63,9 +69,15 @@ You may pass the `--file` option to this terminus plugin to read/write keys to a
 Learn more about Terminus and Terminus Plugins at:
 [https://pantheon.io/docs/terminus/plugins/](https://pantheon.io/docs/terminus/plugins/)
 
-## Terminus 0.x Version
-
-This plugin is compatible with both Terminus 1.x and Terminus 0.x. This works because Terminus 1.x searches for commandfiles in `src/Commands`, and Terminus 0.x searches in `Commands`. In general, Terminus plugins should only support one version of Terminus. It is recommended to use the branches `1.x` and `0.x` for this purpose. The exception to this rule is Terminus plugins that have been widely installed in Continuous Integration scripts via `git clone` without using a `--branch` designation. In that case, placing both versions on the same branch can be helpful in maintaining backwards compatibility with these scripts.
+## Testing
+```bash
+cd /tmp
+git clone https://github.com/pantheon-systems/terminus-secrets-plugin.git
+cd terminus-secrets-plugin
+export TERMINUS_SITE=my-site
+composer install-tools
+composer test
+```
 
 ## Help
 Run `terminus list secrets` for a complete list of available commands. Use `terminus help <command>` to get help on one command.
