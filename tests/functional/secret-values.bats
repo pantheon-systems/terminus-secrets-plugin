@@ -6,7 +6,7 @@
 # Test to see if we can get and set secret values on our test site
 #
 
-@test "set and retrieve secrets for t1" {
+@test "set and retrieve secrets" {
   # Delete all of the secrets
   terminus secrets:delete $TERMINUS_SITE.dev -y
 
