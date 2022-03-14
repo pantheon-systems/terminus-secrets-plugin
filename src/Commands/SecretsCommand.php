@@ -202,7 +202,12 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
     protected function uploadSecrets($site_env_id, $secretValues, $filename)
     {
         $workdir = $this->tempdir();
-        mkdir("$workdir/private");
+        $parent_folders = dirname($filename);
+        if ($parent_folders !== '.') {
+            mkdir("$workdir/private/$parent_folders", 0777, true);
+        } else {
+            mkdir("$workdir/private");
+        }
 
         file_put_contents("$workdir/private/$filename", json_encode($secretValues));
         $this->rsync($site_env_id, "$workdir/private", ':files/');
