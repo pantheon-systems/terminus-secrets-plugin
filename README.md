@@ -16,7 +16,7 @@ Be aware that since this manages a simple json file in the network attached stor
 
 ## Background
 
-This plugin writes entries into the file `~/files/private/secrets.json` (NOTE: This refers to a different `private` directory than the `private` directory used to store your Quicksilver scripts!). This file is, naturally enough, a JSON file containing multiple keys that is not included in your project's source code. The `terminus secrets` script will fetch this file, modify is as requested, and then write it back to the Pantheon site.
+This plugin writes entries into the file `/files/private/secrets.json` (NOTE: This refers to a different `private` directory than the `private` directory used to store your Quicksilver scripts!). This file is, naturally enough, a JSON file containing multiple keys that is not included in your project's source code. The `terminus secrets` script will fetch this file, modify is as requested, and then write it back to the Pantheon site.
 
 Before this Terminus plugin can be used, the `secrets.json` file must be created in each environment. To create the file call the secrets set command and add a key. This will automatically create the file in that environment.
 ```
