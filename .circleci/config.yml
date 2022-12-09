@@ -1,6 +1,6 @@
 defaults: &defaults
   docker:
-    - image: quay.io/pantheon-public/terminus-plugin-test:2.x
+    - image: quay.io/pantheon-public/terminus-plugin-test:4.x-php8.2
   working_directory: ~/work/terminus_pantheor_plugin
   environment:
     BASH_ENV: ~/.bashrc
