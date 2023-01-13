@@ -6,6 +6,8 @@
 [![Terminus v1.x Compatible](https://img.shields.io/badge/terminus-v1.x-green.svg)](https://github.com/pantheon-systems/terminus-secrets-plugin/tree/1.x)
 [![Terminus v0.x Compatible](https://img.shields.io/badge/terminus-v0.x-green.svg)](https://github.com/pantheon-systems/terminus-secrets-plugin/tree/0.x)
 
+**PLEASE SEE REPLACEMENT PLUGIN, [Terminus Secrets Management Plugin](https://github.com/pantheon-systems/terminus-secrets-manager-plugin), CURRENTLY IN EARLY ACCESS, AS A POSSIBLE ALTERNATIVE.**
+
 Terminus Plugin that allows for manipulation of a simple `secrets.json` file for use with Quicksilver on [Pantheon](https://www.pantheon.io) sites.
 
 Adds a command 'secrets' to Terminus 1.x which you can use to add, fetch, remove and update. For a version that works with Terminus 0.x, see the [0.x branch](https://github.com/pantheon-systems/terminus-secrets-plugin/tree/0.x).
