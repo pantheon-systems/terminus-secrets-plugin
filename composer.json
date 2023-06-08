@@ -1,6 +1,6 @@
 {
     "name": "pantheon-systems/terminus-secrets-plugin",
-    "description": "DEPRECATED DO NOT USE: for terminus 2.x",
+    "description": "Secrets - A Terminus plugin that allows for manipulation of a 'secrets' file for use with Quicksilver.",
     "license": "MIT",
     "type": "terminus-plugin",
     "autoload": {
@@ -13,7 +13,6 @@
     },
     "require-dev": {
     },
-    "abandoned": "pantheon-systems/terminus-secrets-manager-plugin",
     "scripts": {
         "install-bats": "if [ ! -f tools/bin/bats ] ; then git clone https://github.com/sstephenson/bats.git tools/bats; tools/bats/install.sh tools; fi",
         "install-phpcs": "mkdir -p tools/phpcs && cd tools/phpcs && COMPOSER_BIN_DIR=../../vendor/bin composer require squizlabs/php_codesniffer:^2.7",
