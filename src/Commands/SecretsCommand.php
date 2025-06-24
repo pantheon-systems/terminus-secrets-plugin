@@ -117,6 +117,24 @@ class SecretsCommand extends TerminusCommand implements SiteAwareInterface
     }
 
     /**
+     * Show a secret value
+     *
+     * @command secrets:get
+     *
+     * @param string $site_env_id Name of the environment to run the drush command on.
+     * @param string $key Item to show
+     * @return string
+     */
+    public function get($site_env_id, $key, $options = ['file' => 'secrets.json'])
+    {
+        try {
+            return $this->show($site_env_id, $key, $options);
+        } catch (TerminusException $te) {
+            throw $te;
+        }
+    }
+
+    /**
      * Show a all secret values
      *
      * @command secrets:list
